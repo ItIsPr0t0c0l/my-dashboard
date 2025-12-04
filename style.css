@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Rock Salt', sans-serif;
     background-color: #1a1a1a; /* Dark background */
     color: #e0e0e0;
     height: 100vh;
@@ -35,6 +35,11 @@ h1 {
 /* ============================================= */
 
 /* Search Bar Styling */
+.search-box {
+    margin-bottom: 20px; /* Adjust the pixel value (20px) to your desired space */
+    /* Add any other search bar styles you already have */
+}
+
 .search-box input {
     width: 100%;
     padding: 15px 20px;
@@ -137,35 +142,3 @@ button { padding: 8px 16px; cursor: pointer; border: none; border-radius: 4px; }
 /* ============================================= */
 /* END OF SLIDER & SHORTCUTS SECTION             */
 /* ============================================= */
-
-/* Links Grid Styling */
-.links-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.card {
-    background-color: #252525;
-    padding: 20px;
-    border-radius: 12px;
-    text-decoration: none;
-    color: #e0e0e0;
-    font-weight: 600;
-    transition: transform 0.2s, background-color 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.card:hover {
-    transform: translateY(-5px); /* Little hop effect */
-    background-color: #333;
-    color: #4a90e2;
-}
-
-.card span {
-    font-size: 1.5rem;
-}
