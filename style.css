@@ -18,16 +18,37 @@ body {
 .container {
     text-align: center;
     width: 100%;
-    max-width: 600px;
+    max-width: 675px;
     padding: 20px;
+}
+
+/* Settings Button */
+.settings-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+    z-index: 100;
+}
+
+.settings-btn:hover {
+    opacity: 1;
+    transform: rotate(90deg); /* Little spin effect */
+    transition: all 0.5s ease;
 }
 
 h1 {
     font-size: 3rem;
     margin-bottom: 30px;
-    font-weight: 600;
+    font-weight: 400;
     color: #ffffff;
+    text-shadow: 0 0 20px rgba(74, 144, 226, 1);
     letter-spacing: -1px;
+    
+    white-space: nowrap;     /* Forces it to stay on one line */
 }
 
 /* ============================================= */
@@ -36,7 +57,7 @@ h1 {
 
 /* Search Bar Styling */
 .search-box {
-    margin-bottom: 20px; /* Adjust the pixel value (20px) to your desired space */
+    margin-bottom: 30px; /* Adjust the pixel value (20px) to your desired space */
     /* Add any other search bar styles you already have */
 }
 
@@ -142,3 +163,41 @@ button { padding: 8px 16px; cursor: pointer; border: none; border-radius: 4px; }
 /* ============================================= */
 /* END OF SLIDER & SHORTCUTS SECTION             */
 /* ============================================= */
+
+
+/* Time and Weather Styling */
+.datetime-container {
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-in;
+}
+
+.time {
+    font-size: 3rem; /* Big Clock */
+    font-weight: 400;
+    color: #4a90e2;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+.date {
+    font-size: 1.2rem;
+    color: #a5a5a5;
+    margin-bottom: 10px;
+}
+
+.weather {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: #4a90e2; /* Nice blue for weather */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Simple fade in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
