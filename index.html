@@ -10,7 +10,15 @@
 <body>
 
     <div class="container">
-        <h1 id="greeting">STAY FOCUSED ASSHOLE!</h1>
+    
+        <!--  Clock & Weather Section -->
+        <div class="datetime-container">
+            <div class="time" id="clock">00:00</div>
+            <div class="date" id="date">Loading Date...</div>
+            <div class="weather" id="weather">Loading Weather...</div>
+        </div>
+        
+        <h1 id="greeting">STAY FOCUSED!  </h1>
 
         <form action="https://www.google.com/search" method="GET" class="search-box">
             <input type="text" name="q" placeholder="Let's find it..." autocomplete="off" autofocus>
@@ -50,6 +58,35 @@
         </div>
     </div>
     <!--  End of Modal -->
+    
+    
+     <!--  Settings page section -->
+    <div class="settings-btn" onclick="openSettings()">
+        ⚙️
+    </div>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h4>System Settings</h4>
+        
+        
+            <label>Weather Location</label>
+            <label>Latitude:</label>
+            <input type="text" id="settingLat" placeholder="e.g. 39.7953">
+        
+            <label>Longitude:</label>
+            <input type="text" id="settingLon" placeholder="e.g. -93.5524">
+        
+            <small style="display:block; margin-bottom:15px; color:#888;">
+            Tip: Google "Coordinates of [City Name]" to find these numbers.
+            </small>
+
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="closeSettings()">Cancel</button>
+                <button class="save-btn" onclick="saveSettings()">Save Configuration</button>
+            </div>
+        </div>
+    </div>
     
     <!--  JavaScript Logic -->
     <script>
@@ -141,6 +178,117 @@
         // Modal Controls (No changes needed here)
         function openModal() { document.getElementById('addModal').style.display = 'flex'; }
         function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+        
+        // --- CLOCK & WEATHER CODE STARTS HERE ---
+        // --- SMART SYSTEM SETTINGS CODE ---
+
+    // Default: Chillicothe, MO
+    const DEFAULT_LAT = 39.7953;
+    const DEFAULT_LON = -93.5524;
+    
+    // Variables to hold current state
+    let currentLat = localStorage.getItem('userLat') || DEFAULT_LAT;
+    let currentLon = localStorage.getItem('userLon') || DEFAULT_LON;
+    let currentTimeZone = localStorage.getItem('userTimeZone') || 'America/Chicago';
+
+    // 1. THE CLOCK (Now uses TimeZone!)
+    function updateClock() {
+        const now = new Date();
+        
+        // We pass the 'timeZone' option to force the clock to match the location
+        const timeString = now.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            timeZone: currentTimeZone 
+        });
+        
+        const dateString = now.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            month: 'long', 
+            day: 'numeric',
+            timeZone: currentTimeZone
+        });
+
+        document.getElementById('clock').textContent = timeString;
+        document.getElementById('date').textContent = dateString;
+    }
+
+    // 2. THE WEATHER (Updates TimeZone too!)
+    async function getWeather() {
+        try {
+            // We ask for the timezone explicitly in the API call
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true&temperature_unit=fahrenheit&timezone=auto`;
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            // SAVE THE DETECTED TIMEZONE
+            if (data.timezone) {
+                currentTimeZone = data.timezone;
+                localStorage.setItem('userTimeZone', data.timezone);
+            }
+
+            const temp = Math.round(data.current_weather.temperature);
+            const code = data.current_weather.weathercode;
+            
+            // Icon Logic
+            let icon = "☀️"; 
+            if (code > 0 && code <= 3) icon = "☁️";
+            if (code >= 45 && code <= 48) icon = "🌫️";
+            if (code >= 51 && code <= 67) icon = "🌧️";
+            if (code >= 71 && code <= 86) icon = "❄️";
+            if (code >= 95) icon = "⚡";
+
+            document.getElementById('weather').textContent = `Current Weather \u00A0\u00A0\u00A0 ${icon} ${temp}°F`;
+            
+            // Force clock update immediately so it doesn't wait 1 second to change timezones
+            updateClock(); 
+
+        } catch (error) {
+            console.error("System Malfunction:", error);
+            document.getElementById('weather').textContent = "Signal Lost";
+        }
+    }
+
+    // 3. SETTINGS MENU LOGIC
+    function openSettings() {
+        // Pre-fill the inputs with current values
+        document.getElementById('settingLat').value = currentLat;
+        document.getElementById('settingLon').value = currentLon;
+        document.getElementById('settingsModal').style.display = 'flex';
+    }
+
+    function closeSettings() {
+        document.getElementById('settingsModal').style.display = 'none';
+    }
+
+    function saveSettings() {
+        const newLat = document.getElementById('settingLat').value;
+        const newLon = document.getElementById('settingLon').value;
+
+        if (newLat && newLon) {
+            // Update Variables
+            currentLat = newLat;
+            currentLon = newLon;
+            
+            // Save to Storage
+            localStorage.setItem('userLat', newLat);
+            localStorage.setItem('userLon', newLon);
+            
+            // Refresh Data
+            getWeather(); // This will also update the timezone!
+            closeSettings();
+        } else {
+            alert("Need valid coordinates, boss.");
+        }
+    }
+
+    // Initialize System
+    setInterval(updateClock, 1000);
+    updateClock(); 
+    getWeather(); 
+    setInterval(getWeather, 600000); // Update weather every 10 mins
+        
     </script>    
     <!-- End of JavaScript Logic -->
         
