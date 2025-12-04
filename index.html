@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Start Page</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rock Salt:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div class="container">
-        <h1 id="greeting">Welcome Home.</h1>
+        <h1 id="greeting">STAY FOCUSED ASSHOLE!</h1>
 
         <form action="https://www.google.com/search" method="GET" class="search-box">
             <input type="text" name="q" placeholder="Let's find it..." autocomplete="off" autofocus>
         </form>
 
         <!--  The Slider Navigation -->
-        <h3>Quick Links</h3>
         <nav class="shortcut-slider" id="slider">
         <!-- Dynamic items will appear here -->
-    
+        
             <!-- The 'Add' Button is hardcoded at the end -->
             <div class="shortcut-item add-btn" onclick="openModal()">
                 <div class="icon-circle">+</div>
@@ -30,20 +29,7 @@
         </nav>
         <!-- End of The Slider Navigation section -->
 
-        <div class="links-grid">
-            <a href="https://github.com" class="card">
-                <span>💻</span> GitHub
-            </a>
-            <a href="https://youtube.com" class="card">
-                <span>🎵</span> Music
-            </a>
-            <a href="https://reddit.com" class="card">
-                <span>👽</span> Reddit
-            </a>
-            <a href="https://gmail.com" class="card">
-                <span>📧</span> Mail
-            </a>
-        </div>
+        
     </div>
 
     <!--  The Modal (Hidden Form) -->
@@ -52,6 +38,11 @@
             <h4>Add New Shortcut</h4>
             <input type="text" id="inputLabel" placeholder="Name (e.g. Google)">
             <input type="url" id="inputUrl" placeholder="URL (e.g. https://google.com)">
+             <!-- Additions start here -->
+            <label for="iconUpload">Custom Icon Upload (Optional):</label>
+            <input type="file" id="iconUpload" accept="image/*">
+            <small>If no file is chosen, we'll try to find the website's favicon.</small>
+  <!-- Additions end here -->
             <div class="modal-buttons">
                 <button class="cancel-btn" onclick="closeModal()">Cancel</button>
                 <button class="save-btn" onclick="saveShortcut()">Save</button>
@@ -64,57 +55,90 @@
     <script>
         // Load saved shortcuts on page load
         document.addEventListener('DOMContentLoaded', loadShortcuts);
-
+        
+        // Google's free API service to fetch favicons
+        const FAVICON_API = 'https://www.google.com/s2/favicons?domain=';
+        
         function loadShortcuts() {
             const shortcuts = JSON.parse(localStorage.getItem('myShortcuts')) || [];
             const slider = document.getElementById('slider');
             const addButton = document.querySelector('.add-btn');
         
             shortcuts.forEach(shortcut => {
-                createShortcutElement(shortcut.label, shortcut.url, slider, addButton);
+                // We now pass the icon data/URL to the creation function
+                createShortcutElement(shortcut.label, shortcut.url, shortcut.icon, slider, addButton);
             });
         }
         
         function saveShortcut() {
             const label = document.getElementById('inputLabel').value;
             let url = document.getElementById('inputUrl').value;
+            const iconFile = document.getElementById('iconUpload').files[0];
         
-            if (!label || !url) return alert("Please fill in both fields");
+            if (!label || !url) return alert("Please fill in both name and URL");
             if (!url.startsWith('http')) url = 'https://' + url;
+            
+            // Use FileReader to convert uploaded image to a Data URL string
+            if (iconFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Icon = e.target.result;
+                    finalizeShortcutSave(label, url, base64Icon);
+                };
+                reader.readAsDataURL(iconFile); // Read the file as a Base64 URL
+            } else {
+                // If no file uploaded, try to grab the default favicon
+                const domain = new URL(url).hostname;
+                // We use Google's API to reliably fetch the favicon URL
+                const faviconUrl = `${FAVICON_API}${encodeURIComponent(domain)}&sz=64`;
+                finalizeShortcutSave(label, url, faviconUrl);
+            }
+        }
         
+        function finalizeShortcutSave(label, url, iconData) {
             // 1. Save to Local Storage
             const shortcuts = JSON.parse(localStorage.getItem('myShortcuts')) || [];
-            shortcuts.push({ label, url });
+            shortcuts.push({ label, url, icon: iconData }); // Save the icon data/URL
             localStorage.setItem('myShortcuts', JSON.stringify(shortcuts));
         
             // 2. Add to DOM
             const slider = document.getElementById('slider');
             const addButton = document.querySelector('.add-btn');
-            createShortcutElement(label, url, slider, addButton);
+            createShortcutElement(label, url, iconData, slider, addButton);
         
             // 3. Cleanup
             closeModal();
             document.getElementById('inputLabel').value = '';
             document.getElementById('inputUrl').value = '';
+            document.getElementById('iconUpload').value = ''; // Clear file input
         }
         
-        function createShortcutElement(label, url, container, insertBeforeNode) {
+        
+        function createShortcutElement(label, url, iconData, container, insertBeforeNode) {
             const a = document.createElement('a');
             a.href = url;
             a.className = 'shortcut-item';
-            // Get the first letter of the label for the icon
-            const firstLetter = label.charAt(0).toUpperCase();
-            
+        
+            let iconContent;
+            if (iconData.startsWith('data:image') || iconData.startsWith('http')) {
+                // If it's a Base64 string or URL, use an <img> tag
+                iconContent = `<img src="${iconData}" alt="${label} icon">`;
+            } else {
+                // Fallback to the first letter if somehow icon data is missing/invalid
+                iconContent = `<span>${label.charAt(0).toUpperCase()}</span>`;
+            }
+        
             a.innerHTML = `
-                <div class="icon-circle">${firstLetter}</div>
+                <div class="icon-circle">
+                ${iconContent} 
+                </div>
                 <span>${label}</span>
             `;
-            
-            // Insert the new link *before* the Add button
+        
             container.insertBefore(a, insertBeforeNode);
         }
         
-            // Modal Controls
+        // Modal Controls (No changes needed here)
         function openModal() { document.getElementById('addModal').style.display = 'flex'; }
         function closeModal() { document.getElementById('addModal').style.display = 'none'; }
     </script>    
