@@ -256,7 +256,7 @@
             if (code >= 71 && code <= 86) icon = "❄️";
             if (code >= 95) icon = "⚡";
 
-            document.getElementById('weather').textContent = `Current Weather \u00A0\u00A0\u00A0 ${icon} ${temp}°F`;
+            document.getElementById('weather').textContent = `Current Weather ${icon} ${temp}°F`;
 
             // Force clock update immediately so it doesn't wait 1 second to change timezones
             updateClock();
