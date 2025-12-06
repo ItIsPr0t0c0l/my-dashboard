@@ -6,13 +6,13 @@
     <title>My Start Page</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Rock Salt:wght@400&display=swap" rel="stylesheet">
-    <meta http-equiv="Content-Security-Policy" content="
+<meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    connect-src 'self' https://api.open-meteo.com https://fonts.gstatic.com/s/rocksalt/v24/MwQ0bhv11WD6QsAVOZrt0M6.woff2;
+    connect-src 'self' https://api.open-meteo.com;
     script-src 'self' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    font-src 'self';
-    img-src 'self';
+    style-src 'self' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: https://www.google.com;
 ">
 </head>
 <body>
