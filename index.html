@@ -21,7 +21,10 @@
         <h1 id="greeting">STAY FOCUSED!  </h1>
 
         <form action="https://www.google.com/search" method="GET" class="search-box">
-            <input type="text" name="q" placeholder="Let's find it..." autocomplete="off" autofocus>
+            <label for="searchInput">
+                <input type="text" id="searchInput" name="q" placeholder="Let's find it..." autocomplete="off" autofocus>
+            </label>
+            <button type="submit">Search</button> <!-- Added a submit button for functionality -->
         </form>
 
         <!--  The Slider Navigation -->
