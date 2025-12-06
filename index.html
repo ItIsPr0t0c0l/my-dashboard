@@ -293,10 +293,13 @@
     }
 
     // Initialize System
-    setInterval(updateClock, 1000);
+    // 1. Start the intervals
+    setInterval(updateClock, 1000);       // Schedule clock ticks
+    setInterval(getWeather, 600000);      // Schedule weather updates (10 mins)
+
+    // 2. Run them immediately so we don't wait for the first interval
     updateClock();
     getWeather();
-    setInterval(getWeather, 600000); // Update weather every 10 mins
 
 
     // --- EVENT LISTENERS (The "Safe" Way to Click) ---
