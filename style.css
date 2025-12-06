@@ -147,35 +147,54 @@ button { padding: 8px 16px; cursor: pointer; border: none; border-radius: 4px; }
 /* ============================================= */
 
 
-/* Time and Weather Styling */
+/* Time and Weather - Top Left Corner */
 .datetime-container {
-    margin-bottom: 20px;
+    position: absolute;  /* This pulls it out of the center box */
+    top: 30px;           /* 20px from the top */
+    left: 20px;          /* 20px from the left */
+    text-align: left;    /* Left-align the text */
     animation: fadeIn 1s ease-in;
+    z-index: 10;         /* Ensures it sits on top of everything */
+    margin-bottom: 30px;
 }
 
 .time {
-    font-size: 3rem; /* Big Clock */
-    font-weight: 400;
-    color: #4a90e2;
+    font-size: 2rem;     /* Made slightly smaller (was 4rem) so it fits better */
+    font-weight: 700;
+    color: #ffffff;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     line-height: 1;
-    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(74, 144, 226, 1);
+    margin-bottom: 5px;
 }
 
 .date {
-    font-size: 1.2rem;
-    color: #a5a5a5;
-    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #a0a0a0;
 }
 
 .weather {
-    font-size: 1.8rem;
-    font-weight: 400;
-    color: #4a90e2; /* Nice blue for weather */
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a90e2; 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* FIXED: Aligns icon to the left, not center */
     gap: 8px;
+}
+
+/* On Mobile: Move it back to center so it doesn't get squished */
+@media (max-width: 768px) {
+    .datetime-container {
+        position: relative; /* Back to normal flow */
+        top: auto;
+        left: auto;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .weather {
+        justify-content: center;
+    }
 }
 
 /* Simple fade in animation */
